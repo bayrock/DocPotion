@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="/">
+  <a href="#">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bayrock/docpotion/main/logo/dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bayrock/docpotion/main/logo/light.svg">
@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/bayrock/docpotion/blob/main/LICENSE"><img src="https://img.shields.io/github/license/bayrock/docpotion?color=6D9886&style=flat-square" alt="License"></a>
+    <a href="https://github.com/bayrock/docpotion/blob/main/LICENSE"><img src="https://img.shields.io/github/license/bayrock/docpotion?color=informational" alt="License"></a>
 </p>
 
 ------
