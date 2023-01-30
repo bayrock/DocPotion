@@ -8,4 +8,6 @@ erl_crash.dump
 *.beam
 /config/*.secret.exs
 .elixir_ls/
-todo.yml
+
+# todo
+todo.md
