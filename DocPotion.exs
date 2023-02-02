@@ -4,8 +4,8 @@ defmodule DocPotion do
     end
 
     def _alchemy({filename, layout}) do
-        pattern = ~r/{(\w+)}/ # The regex pattern to alchemize
-        {String.replace(filename, ".layout", ""), Regex.replace(pattern, layout, fn _, partial -> File.read!("docs/partials/#{partial}.md") end)}
+        pattern = ~r/{([A-Za-z\.]+)}/ # The regex pattern to alchemize
+        {String.replace(filename, ".layout", ""), Regex.replace(pattern, layout, fn _, partial -> File.read!("docs/partials/#{partial}") end)}
     end
 
     def _write({docname, content}) do
