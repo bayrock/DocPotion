@@ -16,7 +16,7 @@
     <a href="https://github.com/bayrock/docpotion/blob/main/LICENSE"><img src="https://img.shields.io/github/license/bayrock/docpotion?color=informational" alt="License"></a>
 </p>
 
-------
+<hr>
 
 ## Getting Started:
 1. Install [Elixir](https://elixir-lang.org/install.html)
