@@ -10,4 +10,7 @@ git clone https://github.com/bayrock/DocPotion
 cd DocPotion && elixir DocPotion.exs
 ```
 
+##### Expected output:
+`{OUTPUT.eex}`
+
 All done! Full document files are written to the root directory by default.

@@ -1,11 +1,33 @@
 defmodule DocPotion do
-    def _read({read_dir, layouts}) do
+    def _loadlayouts({read_dir, layouts}) do
         Enum.map(layouts, fn filename -> {filename, File.read!("#{read_dir}/#{filename}")} end)
     end
 
-    def _alchemy({filename, layout}) do
+    def _loadpartials(doc_count, read_dir \\ "docs/partials") do
+        File.ls!(read_dir)
+        |> Map.new(fn partial -> {partial, DocPotion._unfurl(read_dir, doc_count, partial)} end)
+    end
+
+    def _unfurl(read_dir, doc_count, partial) do
+        [_, extension] = String.split(partial, ".")
+        path = "#{read_dir}/#{partial}"
+        if extension == "eex" do
+            require EEx
+            eex = EEx.compile_file(path)
+            {result, _bindings} = Code.eval_quoted(eex, count: doc_count)
+            result
+        else
+            DocPotion._replace(File.read!(path), fn _, filename -> DocPotion._unfurl(read_dir, doc_count, filename) end)
+        end
+    end
+
+    def _replace(content, callback) do
         pattern = ~r/{(.+)}/
-        {String.replace(filename, ".layout", ""), Regex.replace(pattern, layout, fn _, partial -> File.read!("docs/partials/#{partial}") end)}
+        Regex.replace(pattern, content, callback)
+    end
+
+    def _alchemy({filename, layout}, partials) do
+        {String.replace(filename, ".layout", ""), DocPotion._replace(layout, fn _, filename -> Map.get(partials, filename) end)}
     end
 
     def _write({filename, content}, write_dir \\ "./") do
@@ -14,7 +36,8 @@ defmodule DocPotion do
     end
 
     @doc """
-    - Reads .layout(.md) files from directory (_read)
+    - Reads (and _unfurl)s partial files from directory (_loadpartials)
+    - Reads .layout(.md) files from directory (_loadlayouts)
     - Replaces regex pattern with corresponding partials (_alchemy)
     - Writes full documents to the root directory (_write)
 
@@ -28,13 +51,14 @@ defmodule DocPotion do
     """
     def build(read_dir \\ "docs/layouts") do
         filenames = File.ls!(read_dir)
-        layouts = {read_dir, filenames}
+        doc_count = length(filenames)
+        partials = DocPotion._loadpartials(doc_count)
 
-        result = _read(layouts)
-        |> Enum.map(fn layouts -> _alchemy(layouts) end)
+        result = _loadlayouts({read_dir, filenames})
+        |> Enum.map(fn layout -> _alchemy(layout, partials) end)
         |> Enum.each(fn docs -> _write(docs) end)
 
-        {result, length(filenames)}
+        {result, doc_count}
     end
 
     def success(count), do: IO.puts("Successfully built #{count} document file#{if count > 1 do "s" end}!")
