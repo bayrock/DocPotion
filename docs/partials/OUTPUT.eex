@@ -1,0 +1,1 @@
+<%= if :count == 1 do %>Successfully built 1 document file!<% else %>Successfully built <%= count %> document file!<% end %>
