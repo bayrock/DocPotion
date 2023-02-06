@@ -5,19 +5,19 @@ defmodule DocPotion do
 
     def _loadpartials(doc_count, read_dir \\ "docs/partials") do
         File.ls!(read_dir)
-        |> Map.new(fn partial -> {partial, DocPotion._unfurl(read_dir, doc_count, partial)} end)
+        |> Map.new(fn filename -> {filename, _unfurl(read_dir, filename, doc_count)} end)
     end
 
-    def _unfurl(read_dir, doc_count, partial) do
-        [_, extension] = String.split(partial, ".")
-        path = "#{read_dir}/#{partial}"
+    def _unfurl(read_dir, filename, doc_count) do
+        extension = String.split(filename, ".") |> List.last
+        path = "#{read_dir}/#{filename}"
         if extension == "eex" do
             require EEx
             eex = EEx.compile_file(path)
             {result, _bindings} = Code.eval_quoted(eex, count: doc_count)
-            result
+             _replace(result, fn _, filename -> _unfurl(read_dir, filename, doc_count) end)
         else
-            DocPotion._replace(File.read!(path), fn _, filename -> DocPotion._unfurl(read_dir, doc_count, filename) end)
+            _replace(File.read!(path), fn _, filename -> _unfurl(read_dir, filename, doc_count) end)
         end
     end
 
@@ -27,7 +27,7 @@ defmodule DocPotion do
     end
 
     def _alchemy({filename, layout}, partials) do
-        {String.replace(filename, ".layout", ""), DocPotion._replace(layout, fn _, filename -> Map.get(partials, filename) end)}
+        {String.replace(filename, ".layout", ""), _replace(layout, fn _, filename -> Map.get(partials, filename) end)}
     end
 
     def _write({filename, content}, write_dir \\ "./") do
@@ -52,7 +52,7 @@ defmodule DocPotion do
     def build(read_dir \\ "docs/layouts") do
         filenames = File.ls!(read_dir)
         doc_count = length(filenames)
-        partials = DocPotion._loadpartials(doc_count)
+        partials = _loadpartials(doc_count)
 
         result = _loadlayouts({read_dir, filenames})
         |> Enum.map(fn layout -> _alchemy(layout, partials) end)
