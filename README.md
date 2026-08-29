@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  Markdown preprocessor for alchemical repo documentation
+  tiny markdown preprocessor for alchemizing repo documentation
 </p>
 
 <p align="center">
@@ -24,15 +24,16 @@
 ```
 git clone https://github.com/bayrock/DocPotion
 ```
-3. Add/configure [layouts](https://github.com/bayrock/docpotion/tree/main/docs/layouts) and [partials](https://github.com/bayrock/docpotion/tree/main/docs/partials)
-4. Run the script:
+3. Add/modify [layouts](https://github.com/bayrock/docpotion/tree/main/docs/layouts) and [partials](https://github.com/bayrock/docpotion/tree/main/docs/partials)
+4. Configure [.docpotion.exs](https://github.com/bayrock/DocPotion/blob/main/.docpotion.exs) (optional)
+5. Run the script:
 ```
 cd DocPotion && elixir DocPotion.exs
 ```
 ##### Expected output:
 `Successfully built 1 document file!`
 
-All done! Full document files are written to the root directory by default.
+All done! Full document files are written to the (root by default) write_dir.
 
 #### Built with the following technologies:
 * [Elixir](https://elixir-lang.org/) - Documentation as a first-class citizen
